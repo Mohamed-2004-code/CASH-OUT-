@@ -66,6 +66,7 @@
         </p>
 
         <div class="hero-buttons">
+
           <button class="primary-btn" id="startBtn">
             Commencer
             <span>→</span>
@@ -74,6 +75,7 @@
           <a href="#fonctionnalites" class="secondary-btn">
             Découvrir
           </a>
+
         </div>
 
         <p class="security-text">
@@ -94,6 +96,7 @@
         <div class="main-card">
 
           <div class="card-header">
+
             <div>
               <small>Cashout</small>
               <p>ESPACE PERSONNEL</p>
@@ -102,12 +105,17 @@
             <div class="card-chip">
               ◇
             </div>
+
           </div>
 
           <div class="card-balance">
+
             <small>Solde disponible</small>
+
             <strong>250 000</strong>
+
             <span>FCFA</span>
+
           </div>
 
           <div class="card-footer">
@@ -132,50 +140,84 @@
     <section class="features" id="fonctionnalites">
 
       <div class="section-heading">
+
         <span>FONCTIONNALITÉS</span>
-        <h2>Une expérience simple et moderne.</h2>
+
+        <h2>
+          Une expérience simple et moderne.
+        </h2>
+
         <p>
           Une interface pensée pour présenter clairement
           les différentes fonctions du projet.
         </p>
+
       </div>
+
 
       <div class="features-grid">
 
         <article class="feature-card">
+
           <div class="feature-icon">👤</div>
-          <h3>Espace personnel</h3>
+
+          <h3>
+            Espace personnel
+          </h3>
+
           <p>
             Chaque utilisateur dispose d'un espace personnel
             avec ses informations et son solde de démonstration.
           </p>
+
         </article>
 
+
         <article class="feature-card">
+
           <div class="feature-icon">💰</div>
-          <h3>Solde en FCFA</h3>
+
+          <h3>
+            Solde en FCFA
+          </h3>
+
           <p>
             Affichage clair du solde avec une interface
             adaptée aux téléphones et ordinateurs.
           </p>
+
         </article>
 
+
         <article class="feature-card">
+
           <div class="feature-icon">💸</div>
-          <h3>Retrait simulé</h3>
+
+          <h3>
+            Retrait simulé
+          </h3>
+
           <p>
             Parcours de retrait présenté comme une simulation
             pour le projet scolaire.
           </p>
+
         </article>
 
+
         <article class="feature-card">
+
           <div class="feature-icon">🛡️</div>
-          <h3>Administration</h3>
+
+          <h3>
+            Administration
+          </h3>
+
           <p>
             Une future interface permettra de gérer les
             comptes de démonstration depuis un espace administrateur.
           </p>
+
         </article>
 
       </div>
@@ -193,7 +235,10 @@
         </div>
 
         <div>
-          <span class="section-label">À PROPOS DE CASHOUT</span>
+
+          <span class="section-label">
+            À PROPOS DE CASHOUT
+          </span>
 
           <h2>
             Un projet conçu pour apprendre.
@@ -208,10 +253,15 @@
           </p>
 
           <div class="demo-warning">
-            <strong>Mode démonstration</strong>
+
+            <strong>
+              Mode démonstration
+            </strong>
+
             <span>
               Aucun paiement ou transfert d'argent réel n'est effectué.
             </span>
+
           </div>
 
         </div>
@@ -228,7 +278,11 @@
 
     <div class="modal-box">
 
-      <button class="close-btn" id="closeModal">
+      <button
+        class="close-btn"
+        id="closeModal"
+        type="button"
+      >
         ×
       </button>
 
@@ -236,11 +290,14 @@
         <span>C</span>
       </div>
 
-      <h2>Bienvenue sur Cashout</h2>
+      <h2>
+        Bienvenue sur Cashout
+      </h2>
 
       <p>
         Connectez-vous à votre espace de démonstration.
       </p>
+
 
       <form id="loginForm">
 
@@ -252,8 +309,10 @@
           type="email"
           id="email"
           placeholder="votre@email.com"
+          autocomplete="email"
           required
         >
+
 
         <label for="password">
           Mot de passe
@@ -263,21 +322,33 @@
           type="password"
           id="password"
           placeholder="Votre mot de passe"
+          autocomplete="current-password"
           required
         >
 
-        <button type="submit" class="primary-btn full">
+
+        <button
+          type="submit"
+          class="primary-btn full"
+          id="submitLogin"
+        >
           Se connecter →
         </button>
 
       </form>
 
+
       <div class="modal-demo">
-        <span>MODE DÉMO</span>
+
+        <span>
+          MODE DÉMO
+        </span>
+
         <p>
-          La connexion sera reliée au système de comptes
-          dans les prochaines étapes du projet.
+          La connexion utilise maintenant Supabase
+          pour gérer les comptes de démonstration.
         </p>
+
       </div>
 
     </div>
@@ -287,17 +358,29 @@
 
   <!-- Notification -->
   <div class="toast hidden" id="toast">
+
     <span>✓</span>
+
     <p id="toastMessage"></p>
+
   </div>
 
 
+  <!-- Footer -->
   <footer>
+
     <div class="footer-content">
 
       <div class="logo">
-        <span class="logo-icon">C</span>
-        <span>Cashout</span>
+
+        <span class="logo-icon">
+          C
+        </span>
+
+        <span>
+          Cashout
+        </span>
+
       </div>
 
       <p>
@@ -309,22 +392,49 @@
       </span>
 
     </div>
+
   </footer>
 
 
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-  const SUPABASE_URL = "https://dxohefvisualztcimzil.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_r9X96dxD-hzp9OGJHggdLg_MZX4YmRl";
 
-  const supabase = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
-</script>
+  <!-- Configuration Supabase -->
+  <script>
 
-<script src="script.js"></script>
+    const SUPABASE_URL =
+      "https://dxohefvisualztcimzil.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_r9X96dxD-hzp9OGJHggdLg_MZX4YmRl";
+
+
+    if (!window.supabase) {
+
+      console.error(
+        "Supabase n'a pas été chargé."
+      );
+
+    } else {
+
+      window.cashoutSupabase =
+        window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_ANON_KEY
+        );
+
+      console.log(
+        "Supabase connecté."
+      );
+
+    }
+
+  </script>
+
+
+  <!-- JavaScript Cashout -->
+  <script src="script.js"></script>
 
 </body>
-  </html>
+</html>
