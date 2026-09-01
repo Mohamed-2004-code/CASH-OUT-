@@ -5,75 +5,50 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  /* ==============================
+     ÉLÉMENTS HTML
+  ================================= */
+
+  const loginBtn = document.getElementById("loginBtn");
+  const startBtn = document.getElementById("startBtn");
+
+  const loginModal = document.getElementById("loginModal");
+  const closeModal = document.getElementById("closeModal");
+
+  const loginForm = document.getElementById("loginForm");
+  const submitLogin = document.getElementById("submitLogin");
+
+  const menuBtn = document.getElementById("menuBtn");
+  const navMenu = document.getElementById("navMenu");
+
+  const toast = document.getElementById("toast");
+  const toastMessage = document.getElementById("toastMessage");
+
 
   /* ==============================
      SUPABASE
   ================================= */
 
-  const supabaseClient =
-    window.cashoutSupabase;
-
+  const supabaseClient = window.cashoutSupabase;
 
   if (!supabaseClient) {
-
     console.error(
-      "Supabase n'a pas été initialisé."
+      "Supabase n'est pas correctement configuré."
     );
-
-    alert(
-      "Erreur : Supabase n'est pas chargé."
-    );
-
-    return;
-
   }
 
 
   /* ==============================
-     ELEMENTS
-  ================================= */
-
-  const loginBtn =
-    document.getElementById("loginBtn");
-
-  const startBtn =
-    document.getElementById("startBtn");
-
-  const loginModal =
-    document.getElementById("loginModal");
-
-  const closeModal =
-    document.getElementById("closeModal");
-
-  const loginForm =
-    document.getElementById("loginForm");
-
-  const submitLogin =
-    document.getElementById("submitLogin");
-
-  const menuBtn =
-    document.getElementById("menuBtn");
-
-  const navMenu =
-    document.getElementById("navMenu");
-
-  const toast =
-    document.getElementById("toast");
-
-  const toastMessage =
-    document.getElementById("toastMessage");
-
-
-  /* ==============================
-     OUVRIR CONNEXION
+     OUVRIR LA CONNEXION
   ================================= */
 
   function openLogin() {
 
+    if (!loginModal) return;
+
     loginModal.classList.remove("hidden");
 
-    document.body.style.overflow =
-      "hidden";
+    document.body.style.overflow = "hidden";
 
     setTimeout(() => {
 
@@ -90,55 +65,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ==============================
-     FERMER CONNEXION
+     FERMER LA CONNEXION
   ================================= */
 
   function closeLogin() {
 
+    if (!loginModal) return;
+
     loginModal.classList.add("hidden");
 
-    document.body.style.overflow =
-      "";
+    document.body.style.overflow = "";
 
   }
 
 
   /* ==============================
-     BOUTONS
+     BOUTONS CONNEXION
   ================================= */
 
   if (loginBtn) {
-
     loginBtn.addEventListener(
       "click",
       openLogin
     );
-
   }
 
-
   if (startBtn) {
-
     startBtn.addEventListener(
       "click",
       openLogin
     );
-
   }
 
-
   if (closeModal) {
-
     closeModal.addEventListener(
       "click",
       closeLogin
     );
-
   }
 
 
   /* ==============================
-     CLIC EXTÉRIEUR
+     CLIQUER EN DEHORS DU MODAL
   ================================= */
 
   if (loginModal) {
@@ -147,12 +115,8 @@ document.addEventListener("DOMContentLoaded", () => {
       "click",
       (event) => {
 
-        if (
-          event.target === loginModal
-        ) {
-
+        if (event.target === loginModal) {
           closeLogin();
-
         }
 
       }
@@ -162,19 +126,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ==============================
-     ESC
+     TOUCHE ESC
   ================================= */
 
   document.addEventListener(
     "keydown",
     (event) => {
 
-      if (
-        event.key === "Escape"
-      ) {
-
+      if (event.key === "Escape") {
         closeLogin();
-
       }
 
     }
@@ -194,18 +154,47 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
 
 
-        const email =
-          document
-            .getElementById("email")
-            .value
-            .trim();
+        /* Vérifier Supabase */
 
+        if (!supabaseClient) {
+
+          showToast(
+            "Supabase n'est pas configuré."
+          );
+
+          return;
+
+        }
+
+
+        /* Récupérer les champs */
+
+        const emailInput =
+          document.getElementById("email");
+
+        const passwordInput =
+          document.getElementById("password");
+
+
+        if (!emailInput || !passwordInput) {
+
+          showToast(
+            "Champs de connexion introuvables."
+          );
+
+          return;
+
+        }
+
+
+        const email =
+          emailInput.value.trim();
 
         const password =
-          document
-            .getElementById("password")
-            .value;
+          passwordInput.value;
 
+
+        /* Vérifier les champs */
 
         if (!email || !password) {
 
@@ -220,22 +209,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /* Désactiver le bouton */
 
-        submitLogin.disabled =
-          true;
+        if (submitLogin) {
 
-        submitLogin.textContent =
-          "Connexion...";
+          submitLogin.disabled = true;
+
+          submitLogin.textContent =
+            "Connexion...";
+
+        }
 
 
         try {
 
           console.log(
-            "Tentative de connexion :",
-            email
+            "Tentative de connexion..."
           );
 
 
-          const result =
+          /* ==============================
+             CONNEXION SUPABASE AUTH
+          ================================= */
+
+          const {
+            data,
+            error
+          } =
             await supabaseClient.auth
               .signInWithPassword({
 
@@ -246,16 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
               });
 
 
-          const data =
-            result.data;
-
-          const error =
-            result.error;
-
-
-          /* ==============================
-             ERREUR SUPABASE
-          ================================= */
+          /* Erreur de connexion */
 
           if (error) {
 
@@ -264,43 +253,19 @@ document.addEventListener("DOMContentLoaded", () => {
               error
             );
 
-
-            if (
+            showToast(
+              "Connexion impossible : " +
               error.message
-                .toLowerCase()
-                .includes(
-                  "invalid login credentials"
-                )
-            ) {
-
-              showToast(
-                "Email ou mot de passe incorrect."
-              );
-
-            } else {
-
-              showToast(
-                "Erreur : " +
-                error.message
-              );
-
-            }
-
+            );
 
             return;
 
           }
 
 
-          /* ==============================
-             UTILISATEUR
-          ================================= */
+          /* Vérifier utilisateur */
 
-          const user =
-            data.user;
-
-
-          if (!user) {
+          if (!data || !data.user) {
 
             showToast(
               "Utilisateur introuvable."
@@ -311,29 +276,29 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
 
+          const user =
+            data.user;
+
+
           console.log(
-            "Connexion réussie :",
-            user
+            "Utilisateur connecté :",
+            user.id
           );
 
 
           /* ==============================
-             PROFIL
+             RÉCUPÉRER LE PROFIL
           ================================= */
 
-          const profileResult =
+          const {
+            data: profile,
+            error: profileError
+          } =
             await supabaseClient
               .from("profiles")
               .select("*")
               .eq("id", user.id)
-              .maybeSingle();
-
-
-          const profile =
-            profileResult.data;
-
-          const profileError =
-            profileResult.error;
+              .single();
 
 
           /* ==============================
@@ -347,73 +312,29 @@ document.addEventListener("DOMContentLoaded", () => {
               profileError
             );
 
-
             showToast(
-              "Connexion réussie, mais impossible de récupérer le profil."
+              "Connexion réussie, mais profil introuvable."
             );
-
-
-            setTimeout(() => {
-
-              window.location.href =
-                "client.html";
-
-            }, 1500);
-
 
             return;
 
           }
 
 
-          /* ==============================
-             PROFIL ABSENT
-          ================================= */
-
-          if (!profile) {
-
-            console.warn(
-              "Aucun profil trouvé."
-            );
-
-
-            showToast(
-              "Connexion réussie !"
-            );
-
-
-            setTimeout(() => {
-
-              window.location.href =
-                "client.html";
-
-            }, 1200);
-
-
-            return;
-
-          }
-
-
-          /* ==============================
-             FERMER
-          ================================= */
+          /* Fermer le modal */
 
           closeLogin();
 
 
           /* ==============================
-             ADMIN
+             ADMINISTRATEUR
           ================================= */
 
-          if (
-            profile.role === "admin"
-          ) {
+          if (profile.role === "admin") {
 
             showToast(
               "Bienvenue Administrateur 👑"
             );
-
 
             setTimeout(() => {
 
@@ -421,7 +342,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 "admin.html";
 
             }, 1200);
-
 
             return;
 
@@ -432,11 +352,13 @@ document.addEventListener("DOMContentLoaded", () => {
              CLIENT
           ================================= */
 
+          const fullName =
+            profile.full_name ||
+            "sur Cashout";
+
+
           showToast(
-            `Bienvenue ${
-              profile.full_name ||
-              "sur Cashout"
-            } !`
+            `Bienvenue ${fullName} !`
           );
 
 
@@ -450,13 +372,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
+        /* ==============================
+           ERREUR GÉNÉRALE
+        ================================= */
+
         catch (error) {
 
           console.error(
             "ERREUR CASHOUT :",
             error
           );
-
 
           showToast(
             "Erreur : " +
@@ -469,13 +394,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
+        /* ==============================
+           RÉACTIVER LE BOUTON
+        ================================= */
+
         finally {
 
-          submitLogin.disabled =
-            false;
+          if (submitLogin) {
 
-          submitLogin.textContent =
-            "Se connecter →";
+            submitLogin.disabled = false;
+
+            submitLogin.textContent =
+              "Se connecter →";
+
+          }
 
         }
 
@@ -503,6 +435,8 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+    /* Fermer le menu après clic */
+
     navMenu
       .querySelectorAll("a")
       .forEach((link) => {
@@ -520,11 +454,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
       });
 
+
+    /* Fermer le menu après clic
+       sur Se connecter */
+
+    if (loginBtn) {
+
+      loginBtn.addEventListener(
+        "click",
+        () => {
+
+          navMenu.classList.remove(
+            "open"
+          );
+
+        }
+      );
+
+    }
+
   }
 
 
   /* ==============================
-     NOTIFICATION
+     NOTIFICATION TOAST
   ================================= */
 
   let toastTimer;
@@ -532,10 +485,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showToast(message) {
 
-    if (
-      !toast ||
-      !toastMessage
-    ) {
+    if (!toast || !toastMessage) {
+
+      console.log(message);
 
       return;
 
@@ -551,9 +503,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    clearTimeout(
-      toastTimer
-    );
+    clearTimeout(toastTimer);
 
 
     toastTimer =
@@ -569,7 +519,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ==============================
-     ANIMATION
+     ANIMATION AU SCROLL
   ================================= */
 
   const animatedElements =
@@ -600,6 +550,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 entry.target.style.transform =
                   "translateY(0)";
 
+
                 observer.unobserve(
                   entry.target
                 );
@@ -627,6 +578,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         element.style.transition =
           "opacity 0.7s ease, transform 0.7s ease";
+
 
         observer.observe(
           element
