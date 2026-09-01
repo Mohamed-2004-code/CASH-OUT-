@@ -199,13 +199,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } catch (error) {
 
-      console.error(error);
+  console.error("ERREUR CASHOUT :", error);
 
-      showToast(
-        "Une erreur est survenue."
-      );
+  showToast(
+    "Erreur : " + (error.message || "problème de connexion")
+  );
 
-    }
+}
 
   });
 
