@@ -31,7 +31,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.style.overflow = "hidden";
 
     setTimeout(() => {
-      document.getElementById("email").focus();
+
+      const emailInput = document.getElementById("email");
+
+      if (emailInput) {
+        emailInput.focus();
+      }
+
     }, 100);
 
   }
@@ -68,7 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
   loginModal.addEventListener("click", (event) => {
 
     if (event.target === loginModal) {
+
       closeLogin();
+
     }
 
   });
@@ -81,7 +89,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", (event) => {
 
     if (event.key === "Escape") {
+
       closeLogin();
+
     }
 
   });
@@ -94,6 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loginForm.addEventListener("submit", async (event) => {
 
     event.preventDefault();
+
 
     const email =
       document.getElementById("email").value.trim();
@@ -113,18 +124,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
 
+      /* Connexion */
+
       const { data, error } =
         await supabase.auth.signInWithPassword({
+
           email: email,
           password: password
+
         });
 
 
       if (error) {
 
-        console.error(error);
+        console.error("Erreur connexion :", error);
 
-        showToast("Email ou mot de passe incorrect.");
+        showToast(
+          "Email ou mot de passe incorrect."
+        );
 
         return;
 
@@ -132,6 +149,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       const user = data.user;
+
+
+      if (!user) {
+
+        showToast(
+          "Utilisateur introuvable."
+        );
+
+        return;
+
+      }
 
 
       /* ==============================
@@ -148,10 +176,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (profileError) {
 
-        console.error(profileError);
+        console.error(
+          "Erreur profil :",
+          profileError
+        );
 
         showToast(
           "Connexion réussie, mais profil introuvable."
+        );
+
+        return;
+
+      }
+
+
+      if (!profile) {
+
+        showToast(
+          "Profil utilisateur introuvable."
         );
 
         return;
@@ -191,21 +233,27 @@ document.addEventListener("DOMContentLoaded", () => {
         `Bienvenue ${profile.full_name || "sur Cashout"} !`
       );
 
+
       setTimeout(() => {
 
         window.location.href = "client.html";
 
       }, 1200);
 
+
     } catch (error) {
 
-  console.error("ERREUR CASHOUT :", error);
+      console.error(
+        "ERREUR CASHOUT :",
+        error
+      );
 
-  showToast(
-    "Erreur : " + (error.message || "problème de connexion")
-  );
+      showToast(
+        "Erreur : " +
+        (error.message || "problème de connexion")
+      );
 
-}
+    }
 
   });
 
@@ -240,6 +288,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let toastTimer;
 
+
   function showToast(message) {
 
     toastMessage.textContent = message;
@@ -247,6 +296,7 @@ document.addEventListener("DOMContentLoaded", () => {
     toast.classList.remove("hidden");
 
     clearTimeout(toastTimer);
+
 
     toastTimer = setTimeout(() => {
 
