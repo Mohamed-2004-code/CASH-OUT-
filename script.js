@@ -197,7 +197,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       }, 1200);
 
-
     } catch (error) {
 
       console.error(error);
@@ -228,4 +227,84 @@ document.addEventListener("DOMContentLoaded", () => {
 
     link.addEventListener("click", () => {
 
-      navMenu.classList
+      navMenu.classList.remove("open");
+
+    });
+
+  });
+
+
+  /* ==============================
+     NOTIFICATION
+  ================================= */
+
+  let toastTimer;
+
+  function showToast(message) {
+
+    toastMessage.textContent = message;
+
+    toast.classList.remove("hidden");
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+
+      toast.classList.add("hidden");
+
+    }, 4000);
+
+  }
+
+
+  /* ==============================
+     ANIMATION AU SCROLL
+  ================================= */
+
+  const animatedElements =
+    document.querySelectorAll(
+      ".feature-card, .about-card"
+    );
+
+
+  const observer =
+    new IntersectionObserver(
+      (entries) => {
+
+        entries.forEach((entry) => {
+
+          if (entry.isIntersecting) {
+
+            entry.target.style.opacity = "1";
+
+            entry.target.style.transform =
+              "translateY(0)";
+
+            observer.unobserve(entry.target);
+
+          }
+
+        });
+
+      },
+      {
+        threshold: 0.12
+      }
+    );
+
+
+  animatedElements.forEach((element) => {
+
+    element.style.opacity = "0";
+
+    element.style.transform =
+      "translateY(25px)";
+
+    element.style.transition =
+      "opacity 0.7s ease, transform 0.7s ease";
+
+    observer.observe(element);
+
+  });
+
+});
