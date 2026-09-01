@@ -84,6 +84,261 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ==============================
+   CASHOUT
+   JavaScript principal
+================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const loginBtn = document.getElementById("loginBtn");
+  const startBtn = document.getElementById("startBtn");
+
+  const loginModal = document.getElementById("loginModal");
+  const closeModal = document.getElementById("closeModal");
+
+  const loginForm = document.getElementById("loginForm");
+
+  const menuBtn = document.getElementById("menuBtn");
+  const navMenu = document.getElementById("navMenu");
+
+  const toast = document.getElementById("toast");
+  const toastMessage = document.getElementById("toastMessage");
+
+
+  /* ==============================
+     OUVRIR LA CONNEXION
+  ================================= */
+
+  function openLogin() {
+    loginModal.classList.remove("hidden");
+
+    document.body.style.overflow = "hidden";
+
+    setTimeout(() => {
+      document.getElementById("email").focus();
+    }, 100);
+  }
+
+
+  /* ==============================
+     FERMER LA CONNEXION
+  ================================= */
+
+  function closeLogin() {
+    loginModal.classList.add("hidden");
+
+    document.body.style.overflow = "";
+  }
+
+
+  /* ==============================
+     BOUTONS CONNEXION
+  ================================= */
+
+  loginBtn.addEventListener("click", openLogin);
+
+  startBtn.addEventListener("click", openLogin);
+
+  closeModal.addEventListener("click", closeLogin);
+
+
+  /* ==============================
+     FERMER EN CLIQUANT À L'EXTÉRIEUR
+  ================================= */
+
+  loginModal.addEventListener("click", (event) => {
+
+    if (event.target === loginModal) {
+      closeLogin();
+    }
+
+  });
+
+
+  /* ==============================
+     TOUCHE ESC
+  ================================= */
+
+  document.addEventListener("keydown", (event) => {
+
+    if (event.key === "Escape") {
+      closeLogin();
+    }
+
+  });
+
+
+  /* ==============================
+   CASHOUT
+   JavaScript principal
+================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const loginBtn = document.getElementById("loginBtn");
+  const startBtn = document.getElementById("startBtn");
+
+  const loginModal = document.getElementById("loginModal");
+  const closeModal = document.getElementById("closeModal");
+
+  const loginForm = document.getElementById("loginForm");
+
+  const menuBtn = document.getElementById("menuBtn");
+  const navMenu = document.getElementById("navMenu");
+
+  const toast = document.getElementById("toast");
+  const toastMessage = document.getElementById("toastMessage");
+
+
+  /* ==============================
+     OUVRIR LA CONNEXION
+  ================================= */
+
+  function openLogin() {
+    loginModal.classList.remove("hidden");
+
+    document.body.style.overflow = "hidden";
+
+    setTimeout(() => {
+      document.getElementById("email").focus();
+    }, 100);
+  }
+
+
+  /* ==============================
+     FERMER LA CONNEXION
+  ================================= */
+
+  function closeLogin() {
+    loginModal.classList.add("hidden");
+
+    document.body.style.overflow = "";
+  }
+
+
+  /* ==============================
+     BOUTONS CONNEXION
+  ================================= */
+
+  loginBtn.addEventListener("click", openLogin);
+
+  startBtn.addEventListener("click", openLogin);
+
+  closeModal.addEventListener("click", closeLogin);
+
+
+  /* ==============================
+     FERMER EN CLIQUANT À L'EXTÉRIEUR
+  ================================= */
+
+  loginModal.addEventListener("click", (event) => {
+
+    if (event.target === loginModal) {
+      closeLogin();
+    }
+
+  });
+
+
+  /* ==============================
+     TOUCHE ESC
+  ================================= */
+
+  document.addEventListener("keydown", (event) => {
+
+    if (event.key === "Escape") {
+      closeLogin();
+    }
+
+  });
+
+
+  /* ==============================
+   CASHOUT
+   JavaScript principal
+================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const loginBtn = document.getElementById("loginBtn");
+  const startBtn = document.getElementById("startBtn");
+
+  const loginModal = document.getElementById("loginModal");
+  const closeModal = document.getElementById("closeModal");
+
+  const loginForm = document.getElementById("loginForm");
+
+  const menuBtn = document.getElementById("menuBtn");
+  const navMenu = document.getElementById("navMenu");
+
+  const toast = document.getElementById("toast");
+  const toastMessage = document.getElementById("toastMessage");
+
+
+  /* ==============================
+     OUVRIR LA CONNEXION
+  ================================= */
+
+  function openLogin() {
+    loginModal.classList.remove("hidden");
+
+    document.body.style.overflow = "hidden";
+
+    setTimeout(() => {
+      document.getElementById("email").focus();
+    }, 100);
+  }
+
+
+  /* ==============================
+     FERMER LA CONNEXION
+  ================================= */
+
+  function closeLogin() {
+    loginModal.classList.add("hidden");
+
+    document.body.style.overflow = "";
+  }
+
+
+  /* ==============================
+     BOUTONS CONNEXION
+  ================================= */
+
+  loginBtn.addEventListener("click", openLogin);
+
+  startBtn.addEventListener("click", openLogin);
+
+  closeModal.addEventListener("click", closeLogin);
+
+
+  /* ==============================
+     FERMER EN CLIQUANT À L'EXTÉRIEUR
+  ================================= */
+
+  loginModal.addEventListener("click", (event) => {
+
+    if (event.target === loginModal) {
+      closeLogin();
+    }
+
+  });
+
+
+  /* ==============================
+     TOUCHE ESC
+  ================================= */
+
+  document.addEventListener("keydown", (event) => {
+
+    if (event.key === "Escape") {
+      closeLogin();
+    }
+
+  });
+
+
+  /* ==============================
      CONNEXION DE DÉMONSTRATION
   ================================= */
 
