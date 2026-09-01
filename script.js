@@ -5,34 +5,80 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  const loginBtn = document.getElementById("loginBtn");
-  const startBtn = document.getElementById("startBtn");
 
-  const loginModal = document.getElementById("loginModal");
-  const closeModal = document.getElementById("closeModal");
+  /* ==============================
+     SUPABASE
+  ================================= */
 
-  const loginForm = document.getElementById("loginForm");
+  const supabaseClient =
+    window.cashoutSupabase;
 
-  const menuBtn = document.getElementById("menuBtn");
-  const navMenu = document.getElementById("navMenu");
 
-  const toast = document.getElementById("toast");
-  const toastMessage = document.getElementById("toastMessage");
+  if (!supabaseClient) {
+
+    console.error(
+      "Supabase n'a pas été initialisé."
+    );
+
+    alert(
+      "Erreur : Supabase n'est pas chargé."
+    );
+
+    return;
+
+  }
 
 
   /* ==============================
-     OUVRIR LA CONNEXION
+     ELEMENTS
+  ================================= */
+
+  const loginBtn =
+    document.getElementById("loginBtn");
+
+  const startBtn =
+    document.getElementById("startBtn");
+
+  const loginModal =
+    document.getElementById("loginModal");
+
+  const closeModal =
+    document.getElementById("closeModal");
+
+  const loginForm =
+    document.getElementById("loginForm");
+
+  const submitLogin =
+    document.getElementById("submitLogin");
+
+  const menuBtn =
+    document.getElementById("menuBtn");
+
+  const navMenu =
+    document.getElementById("navMenu");
+
+  const toast =
+    document.getElementById("toast");
+
+  const toastMessage =
+    document.getElementById("toastMessage");
+
+
+  /* ==============================
+     OUVRIR CONNEXION
   ================================= */
 
   function openLogin() {
 
     loginModal.classList.remove("hidden");
 
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow =
+      "hidden";
 
     setTimeout(() => {
 
-      const emailInput = document.getElementById("email");
+      const emailInput =
+        document.getElementById("email");
 
       if (emailInput) {
         emailInput.focus();
@@ -44,242 +90,437 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ==============================
-     FERMER LA CONNEXION
+     FERMER CONNEXION
   ================================= */
 
   function closeLogin() {
 
     loginModal.classList.add("hidden");
 
-    document.body.style.overflow = "";
+    document.body.style.overflow =
+      "";
 
   }
 
 
   /* ==============================
-     BOUTONS CONNEXION
+     BOUTONS
   ================================= */
 
-  loginBtn.addEventListener("click", openLogin);
+  if (loginBtn) {
 
-  startBtn.addEventListener("click", openLogin);
+    loginBtn.addEventListener(
+      "click",
+      openLogin
+    );
 
-  closeModal.addEventListener("click", closeLogin);
+  }
+
+
+  if (startBtn) {
+
+    startBtn.addEventListener(
+      "click",
+      openLogin
+    );
+
+  }
+
+
+  if (closeModal) {
+
+    closeModal.addEventListener(
+      "click",
+      closeLogin
+    );
+
+  }
 
 
   /* ==============================
-     FERMER EN CLIQUANT À L'EXTÉRIEUR
+     CLIC EXTÉRIEUR
   ================================= */
 
-  loginModal.addEventListener("click", (event) => {
+  if (loginModal) {
 
-    if (event.target === loginModal) {
+    loginModal.addEventListener(
+      "click",
+      (event) => {
 
-      closeLogin();
+        if (
+          event.target === loginModal
+        ) {
 
-    }
+          closeLogin();
 
-  });
+        }
+
+      }
+    );
+
+  }
 
 
   /* ==============================
-     TOUCHE ESC
+     ESC
   ================================= */
 
-  document.addEventListener("keydown", (event) => {
+  document.addEventListener(
+    "keydown",
+    (event) => {
 
-    if (event.key === "Escape") {
+      if (
+        event.key === "Escape"
+      ) {
 
-      closeLogin();
+        closeLogin();
+
+      }
 
     }
-
-  });
+  );
 
 
   /* ==============================
      CONNEXION SUPABASE
   ================================= */
 
-  loginForm.addEventListener("submit", async (event) => {
+  if (loginForm) {
 
-    event.preventDefault();
+    loginForm.addEventListener(
+      "submit",
+      async (event) => {
 
-
-    const email =
-      document.getElementById("email").value.trim();
-
-    const password =
-      document.getElementById("password").value.trim();
+        event.preventDefault();
 
 
-    if (!email || !password) {
-
-      showToast("Veuillez remplir tous les champs.");
-
-      return;
-
-    }
+        const email =
+          document
+            .getElementById("email")
+            .value
+            .trim();
 
 
-    try {
-
-      /* Connexion */
-
-      const { data, error } =
-        await supabase.auth.signInWithPassword({
-
-          email: email,
-          password: password
-
-        });
+        const password =
+          document
+            .getElementById("password")
+            .value;
 
 
-      if (error) {
+        if (!email || !password) {
 
-        console.error("Erreur connexion :", error);
+          showToast(
+            "Veuillez remplir tous les champs."
+          );
 
-        showToast(
-          "Email ou mot de passe incorrect."
-        );
+          return;
 
-        return;
+        }
+
+
+        /* Désactiver le bouton */
+
+        submitLogin.disabled =
+          true;
+
+        submitLogin.textContent =
+          "Connexion...";
+
+
+        try {
+
+          console.log(
+            "Tentative de connexion :",
+            email
+          );
+
+
+          const result =
+            await supabaseClient.auth
+              .signInWithPassword({
+
+                email: email,
+
+                password: password
+
+              });
+
+
+          const data =
+            result.data;
+
+          const error =
+            result.error;
+
+
+          /* ==============================
+             ERREUR SUPABASE
+          ================================= */
+
+          if (error) {
+
+            console.error(
+              "Erreur Supabase :",
+              error
+            );
+
+
+            if (
+              error.message
+                .toLowerCase()
+                .includes(
+                  "invalid login credentials"
+                )
+            ) {
+
+              showToast(
+                "Email ou mot de passe incorrect."
+              );
+
+            } else {
+
+              showToast(
+                "Erreur : " +
+                error.message
+              );
+
+            }
+
+
+            return;
+
+          }
+
+
+          /* ==============================
+             UTILISATEUR
+          ================================= */
+
+          const user =
+            data.user;
+
+
+          if (!user) {
+
+            showToast(
+              "Utilisateur introuvable."
+            );
+
+            return;
+
+          }
+
+
+          console.log(
+            "Connexion réussie :",
+            user
+          );
+
+
+          /* ==============================
+             PROFIL
+          ================================= */
+
+          const profileResult =
+            await supabaseClient
+              .from("profiles")
+              .select("*")
+              .eq("id", user.id)
+              .maybeSingle();
+
+
+          const profile =
+            profileResult.data;
+
+          const profileError =
+            profileResult.error;
+
+
+          /* ==============================
+             ERREUR PROFIL
+          ================================= */
+
+          if (profileError) {
+
+            console.error(
+              "Erreur profil :",
+              profileError
+            );
+
+
+            showToast(
+              "Connexion réussie, mais impossible de récupérer le profil."
+            );
+
+
+            setTimeout(() => {
+
+              window.location.href =
+                "client.html";
+
+            }, 1500);
+
+
+            return;
+
+          }
+
+
+          /* ==============================
+             PROFIL ABSENT
+          ================================= */
+
+          if (!profile) {
+
+            console.warn(
+              "Aucun profil trouvé."
+            );
+
+
+            showToast(
+              "Connexion réussie !"
+            );
+
+
+            setTimeout(() => {
+
+              window.location.href =
+                "client.html";
+
+            }, 1200);
+
+
+            return;
+
+          }
+
+
+          /* ==============================
+             FERMER
+          ================================= */
+
+          closeLogin();
+
+
+          /* ==============================
+             ADMIN
+          ================================= */
+
+          if (
+            profile.role === "admin"
+          ) {
+
+            showToast(
+              "Bienvenue Administrateur 👑"
+            );
+
+
+            setTimeout(() => {
+
+              window.location.href =
+                "admin.html";
+
+            }, 1200);
+
+
+            return;
+
+          }
+
+
+          /* ==============================
+             CLIENT
+          ================================= */
+
+          showToast(
+            `Bienvenue ${
+              profile.full_name ||
+              "sur Cashout"
+            } !`
+          );
+
+
+          setTimeout(() => {
+
+            window.location.href =
+              "client.html";
+
+          }, 1200);
+
+        }
+
+
+        catch (error) {
+
+          console.error(
+            "ERREUR CASHOUT :",
+            error
+          );
+
+
+          showToast(
+            "Erreur : " +
+            (
+              error.message ||
+              "problème de connexion"
+            )
+          );
+
+        }
+
+
+        finally {
+
+          submitLogin.disabled =
+            false;
+
+          submitLogin.textContent =
+            "Se connecter →";
+
+        }
 
       }
+    );
 
-
-      const user = data.user;
-
-
-      if (!user) {
-
-        showToast(
-          "Utilisateur introuvable."
-        );
-
-        return;
-
-      }
-
-
-      /* ==============================
-         RÉCUPÉRER LE PROFIL
-      ================================= */
-
-      const { data: profile, error: profileError } =
-        await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", user.id)
-          .single();
-
-
-      if (profileError) {
-
-        console.error(
-          "Erreur profil :",
-          profileError
-        );
-
-        showToast(
-          "Connexion réussie, mais profil introuvable."
-        );
-
-        return;
-
-      }
-
-
-      if (!profile) {
-
-        showToast(
-          "Profil utilisateur introuvable."
-        );
-
-        return;
-
-      }
-
-
-      closeLogin();
-
-
-      /* ==============================
-         ADMINISTRATEUR
-      ================================= */
-
-      if (profile.role === "admin") {
-
-        showToast(
-          "Bienvenue Administrateur 👑"
-        );
-
-        setTimeout(() => {
-
-          window.location.href = "admin.html";
-
-        }, 1200);
-
-        return;
-
-      }
-
-
-      /* ==============================
-         CLIENT
-      ================================= */
-
-      showToast(
-        `Bienvenue ${profile.full_name || "sur Cashout"} !`
-      );
-
-
-      setTimeout(() => {
-
-        window.location.href = "client.html";
-
-      }, 1200);
-
-
-    } catch (error) {
-
-      console.error(
-        "ERREUR CASHOUT :",
-        error
-      );
-
-      showToast(
-        "Erreur : " +
-        (error.message || "problème de connexion")
-      );
-
-    }
-
-  });
+  }
 
 
   /* ==============================
      MENU MOBILE
   ================================= */
 
-  menuBtn.addEventListener("click", () => {
+  if (menuBtn && navMenu) {
 
-    navMenu.classList.toggle("open");
+    menuBtn.addEventListener(
+      "click",
+      () => {
 
-  });
+        navMenu.classList.toggle(
+          "open"
+        );
+
+      }
+    );
 
 
-  /* Fermer le menu après un clic */
+    navMenu
+      .querySelectorAll("a")
+      .forEach((link) => {
 
-  navMenu.querySelectorAll("a").forEach((link) => {
+        link.addEventListener(
+          "click",
+          () => {
 
-    link.addEventListener("click", () => {
+            navMenu.classList.remove(
+              "open"
+            );
 
-      navMenu.classList.remove("open");
+          }
+        );
 
-    });
+      });
 
-  });
+  }
 
 
   /* ==============================
@@ -291,24 +532,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showToast(message) {
 
-    toastMessage.textContent = message;
+    if (
+      !toast ||
+      !toastMessage
+    ) {
 
-    toast.classList.remove("hidden");
+      return;
 
-    clearTimeout(toastTimer);
+    }
 
 
-    toastTimer = setTimeout(() => {
+    toastMessage.textContent =
+      message;
 
-      toast.classList.add("hidden");
 
-    }, 4000);
+    toast.classList.remove(
+      "hidden"
+    );
+
+
+    clearTimeout(
+      toastTimer
+    );
+
+
+    toastTimer =
+      setTimeout(() => {
+
+        toast.classList.add(
+          "hidden"
+        );
+
+      }, 4000);
 
   }
 
 
   /* ==============================
-     ANIMATION AU SCROLL
+     ANIMATION
   ================================= */
 
   const animatedElements =
@@ -317,44 +578,63 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-  const observer =
-    new IntersectionObserver(
-      (entries) => {
+  if (
+    "IntersectionObserver"
+    in window
+  ) {
 
-        entries.forEach((entry) => {
+    const observer =
+      new IntersectionObserver(
+        (entries) => {
 
-          if (entry.isIntersecting) {
+          entries.forEach(
+            (entry) => {
 
-            entry.target.style.opacity = "1";
+              if (
+                entry.isIntersecting
+              ) {
 
-            entry.target.style.transform =
-              "translateY(0)";
+                entry.target.style.opacity =
+                  "1";
 
-            observer.unobserve(entry.target);
+                entry.target.style.transform =
+                  "translateY(0)";
 
-          }
+                observer.unobserve(
+                  entry.target
+                );
 
-        });
+              }
 
-      },
-      {
-        threshold: 0.12
+            }
+          );
+
+        },
+        {
+          threshold: 0.12
+        }
+      );
+
+
+    animatedElements.forEach(
+      (element) => {
+
+        element.style.opacity =
+          "0";
+
+        element.style.transform =
+          "translateY(25px)";
+
+        element.style.transition =
+          "opacity 0.7s ease, transform 0.7s ease";
+
+        observer.observe(
+          element
+        );
+
       }
     );
 
-
-  animatedElements.forEach((element) => {
-
-    element.style.opacity = "0";
-
-    element.style.transform =
-      "translateY(25px)";
-
-    element.style.transition =
-      "opacity 0.7s ease, transform 0.7s ease";
-
-    observer.observe(element);
-
-  });
+  }
 
 });
