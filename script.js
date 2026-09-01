@@ -156,52 +156,62 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ==============================
-     ANIMATION AU SCROLL
-  ================================= */
+   CONNEXION SUPABASE
+================================= */
 
-  const animatedElements =
-    document.querySelectorAll(
-      ".feature-card, .about-card"
+loginForm.addEventListener("submit", async (event) => {
+
+  event.preventDefault();
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email || !password) {
+    showToast("Veuillez remplir tous les champs.");
+    return;
+  }
+
+  try {
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+    if (error) {
+      showToast("Email ou mot de passe incorrect.");
+      console.error(error);
+      return;
+    }
+
+    const user = data.user;
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError) {
+      console.error(profileError);
+      showToast("Connexion réussie, mais profil introuvable.");
+      return;
+    }
+
+    closeLogin();
+
+    showToast(
+      `Bienvenue ${profile.full_name || "sur Cashout"} !`
     );
 
+    console.log("Utilisateur connecté :", user);
+    console.log("Profil :", profile);
 
-  const observer = new IntersectionObserver(
-    (entries) => {
+  } catch (error) {
 
-      entries.forEach((entry) => {
+    console.error(error);
+    showToast("Une erreur est survenue.");
 
-        if (entry.isIntersecting) {
-
-          entry.target.style.opacity = "1";
-
-          entry.target.style.transform =
-            "translateY(0)";
-
-          observer.unobserve(entry.target);
-
-        }
-
-      });
-
-    },
-    {
-      threshold: 0.12
-    }
-  );
-
-
-  animatedElements.forEach((element) => {
-
-    element.style.opacity = "0";
-
-    element.style.transform =
-      "translateY(25px)";
-
-    element.style.transition =
-      "opacity 0.7s ease, transform 0.7s ease";
-
-    observer.observe(element);
-
-  });
+  }
 
 });
